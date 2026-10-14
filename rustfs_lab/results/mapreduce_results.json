@@ -7222,7 +7222,7 @@
     }
   ],
   "metrics": {
-    "avg_time_sec": 0.9376451174418131,
-    "avg_peak_memory_mb": 0.9316813151041666
+    "avg_time_sec": 1.1221725940704346,
+    "avg_peak_memory_mb": 0.9326356252034506
   }
 }
