@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: over-quota
+  namespace: quota-demo
+spec:
+  restartPolicy: Never
+  containers:
+    - name: over
+      image: fromhellboy/k8s-skills-worker:1.0
+      imagePullPolicy: IfNotPresent
+      command: ["sleep","3600"]
+      resources:
+        requests:
+          cpu: "2"
+          memory: 128Mi
+        limits:
+          cpu: "2"
+          memory: 128Mi

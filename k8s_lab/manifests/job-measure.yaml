@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: skills-measure
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: worker
+          image: fromhellboy/k8s-skills-worker:1.0
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - secretRef:
+                name: minio-creds
+          env:
+            - name: S3_ENDPOINT
+              value: http://rustfs:9000
+            - name: S3_BUCKET
+              value: vacancies-dataset
+            - name: SHARD_INDEX
+              value: "0"
+            - name: SHARD_COUNT
+              value: "1"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          volumeMounts:
+            - name: filelist
+              mountPath: /etc/filelist
+              readOnly: true
+      volumes:
+        - name: filelist
+          configMap:
+            name: filelist
