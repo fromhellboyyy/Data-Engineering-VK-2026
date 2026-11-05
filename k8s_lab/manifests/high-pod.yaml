@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: high-pod
+spec:
+  priorityClassName: high-priority
+  restartPolicy: Never
+  containers:
+    - name: high
+      image: fromhellboy/k8s-skills-worker:1.0
+      imagePullPolicy: IfNotPresent
+      command: ["sleep","3600"]
+      resources:
+        requests:
+          cpu: "10"
+          memory: 512Mi
+        limits:
+          cpu: "10"
+          memory: 512Mi

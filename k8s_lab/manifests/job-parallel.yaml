@@ -1,0 +1,41 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: skills-parallel
+spec:
+  completions: 4
+  parallelism: 4
+  completionMode: Indexed
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: worker
+          image: fromhellboy/k8s-skills-worker:1.0
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - secretRef:
+                name: minio-creds
+          env:
+            - name: S3_ENDPOINT
+              value: http://rustfs:9000
+            - name: S3_BUCKET
+              value: vacancies-dataset
+            - name: SHARD_COUNT
+              value: "4"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 64Mi
+          volumeMounts:
+            - name: filelist
+              mountPath: /etc/filelist
+              readOnly: true
+      volumes:
+        - name: filelist
+          configMap:
+            name: filelist

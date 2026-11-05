@@ -1,0 +1,43 @@
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: high-priority
+value: 1000000
+preemptionPolicy: PreemptLowerPriority
+globalDefault: false
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: low-priority
+value: 0
+preemptionPolicy: PreemptLowerPriority
+globalDefault: false
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: low-filler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: low-filler
+  template:
+    metadata:
+      labels:
+        app: low-filler
+    spec:
+      priorityClassName: low-priority
+      containers:
+        - name: filler
+          image: fromhellboy/k8s-skills-worker:1.0
+          imagePullPolicy: IfNotPresent
+          command: ["sleep","3600"]
+          resources:
+            requests:
+              cpu: "18"
+              memory: 1Gi
+            limits:
+              cpu: "18"
+              memory: 1Gi
